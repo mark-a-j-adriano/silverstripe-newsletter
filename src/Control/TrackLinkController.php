@@ -14,6 +14,7 @@ class TrackLinkController extends ContentController
 
         if ($params = $this->getURLParams()) {
             if (isset($params['Hash'])) {
+                $hash = $params['Hash'];
                 $link = NewsletterTrackedLink::get()->filter("Hash", $hash);
 
                 if ($link) {

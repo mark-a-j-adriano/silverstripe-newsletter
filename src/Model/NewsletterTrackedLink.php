@@ -3,6 +3,7 @@
 namespace SilverStripe\Newsletter\Model;
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Control\Controller;
 
 class NewsletterTrackedLink extends DataObject
 {

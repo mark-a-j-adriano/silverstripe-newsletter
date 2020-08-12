@@ -14,6 +14,7 @@ use SilverStripe\Newsletter\Model\MailingList;
 use SilverStripe\Control\Director;
 use SilverStripe\Newsletter\Form\ResubscribeForm;
 use SilverStripe\Newsletter\Extensions\NewsletterContentControllerExtension;
+use SilverStripe\Control\Email\Email;
 
 class UnsubscribeController extends PageController
 {
@@ -239,7 +240,7 @@ class UnsubscribeController extends PageController
 
         return $this->customise([
             'Title' => _t('Newsletter.RESUBSCRIBED', 'Resubscribed'),
-            'Content' => DBField::create_field('HTMLText',$content),
+            'Content' => DBField::create_field('HTMLText', $content),
         ]);
     }
 

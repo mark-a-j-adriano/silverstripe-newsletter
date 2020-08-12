@@ -5,6 +5,12 @@ namespace SilverStripe\Newsletter\Pagetypes;
 use PageController;
 use SilverStripe\Newsletter\Form\SubscriptionForm;
 use SilverStripe\Newsletter\Model\UnsubscribeRecord;
+use SilverStripe\Newsletter\Model\Recipient;
+use SilverStripe\Newsletter\Pagetypes\SubscriptionPage;
+use SilverStripe\Newsletter\Control\UnsubscribeController;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\Email\Email;
+use SilverStripe\Core\ClassInfo;
 
 class SubscriptionPageController extends PageController
 {
@@ -134,7 +140,9 @@ class SubscriptionPageController extends PageController
                 $recipientData = array();
             }
 
-            $daysExpired = SubscriptionPage::get_days_verification_link_alive();
+
+
+            $daysExpired = ClassInfo::hasMethod(SubscriptionPage::class, 'get_days_verification_link_alive') ? SubscriptionPage::get_days_verification_link_alive() : 0;
             $recipientData['VerificationExpiredContent1'] =
                 sprintf(
                     _t(

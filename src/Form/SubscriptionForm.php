@@ -18,6 +18,9 @@ use SilverStripe\Control\Email\Email;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
+use SilverStripe\Forms\LabelField;
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Newsletter\Model\UnsubscribeRecord;
 
 class SubscriptionForm extends Form
 {
@@ -27,8 +30,7 @@ class SubscriptionForm extends Form
 
         if ($fields && is_array($fields)) {
             $fields = new FieldList($fields);
-        }
-        else if (!$fields || $fields instanceof FieldList) {
+        } elseif (!$fields || $fields instanceof FieldList) {
             $fields = new FieldList();
         }
 
@@ -58,16 +60,16 @@ class SubscriptionForm extends Form
         parent::__construct($controller, $name, $fields, $actions, $required);
     }
 
-     /**
-      * Subscribes a given email address to the {@link NewsletterType} associated
-      * with this page
-      *
-      * @param array
-      * @param Form
-      * @param SS_HTTPRequest
-      *
-      * @return Redirection
-      */
+    /**
+     * Subscribes a given email address to the {@link NewsletterType} associated
+     * with this page
+     *
+     * @param array
+     * @param Form
+     * @param SS_HTTPRequest
+     *
+     * @return Redirection
+     */
     public function doSubscribe($data, $form, $request)
     {
         // check to see if member already exists

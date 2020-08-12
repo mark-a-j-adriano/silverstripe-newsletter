@@ -7,12 +7,12 @@ use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\View\Requirements;
-use SilverStripe\Core\Convert;
 use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Core\ClassInfo;
 
 class CheckboxSetWithExtraField extends CheckboxSetField
 {
-
     public $extra = array();
     public $extraValue = array();
 
@@ -179,7 +179,7 @@ class CheckboxSetWithExtraField extends CheckboxSetField
                 if (!empty($this->extraValue)) {
                     foreach ($this->extraValue as $label => $val) {
                         if ($val) {
-                            $extraValue[$label] = Convert::json2array($val);
+                            $extraValue[$label] = json_decode($val, true);
                         }
                     }
                 }
@@ -227,7 +227,7 @@ class CheckboxSetWithExtraField extends CheckboxSetField
             }
 
             if (isset($filtered)) {
-                return Convert::array2json($filtered);
+                return json_encode($filtered);
             } else {
                 return '';
             }
@@ -243,7 +243,7 @@ class CheckboxSetWithExtraField extends CheckboxSetField
         $this->value['Email']['Required'] = 1;
         $value = ArrayLib::invert($this->value);
 
-        if ($fieldname && $record && $record->hasMethod($fieldname)) {
+        if ($fieldname && $record && !ClassInfo::hasMethod($record, $fieldname)) {
             $idList = array();
 
             if ($value) {
@@ -275,7 +275,7 @@ class CheckboxSetWithExtraField extends CheckboxSetField
                     if ($k == 'Value') {
                         $record->$fieldname = implode(",", $v);
                     } else {
-                        $record->$k = Convert::array2json($v);
+                        $record->$k = json_encode($v);
                     }
                 }
             } else {

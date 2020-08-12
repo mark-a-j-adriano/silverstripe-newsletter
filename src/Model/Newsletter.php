@@ -32,6 +32,7 @@ use SilverStripe\Newsletter\Form\GridField\GridFieldNewsletterSummaryHeader;
 use SilverStripe\Newsletter\Jobs\NewsletterMailerJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
 use Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor;
+use SilverStripe\Newsletter\Model\Recipient;
 
 class Newsletter extends DataObject implements CMSPreviewable
 {
@@ -84,6 +85,8 @@ class Newsletter extends DataObject implements CMSPreviewable
         'MailingLists'
     ];
 
+    private static $field_labels = [];
+
     private static $table_name = 'Newsletter';
 
     private static $singular_name = 'Newsletter';
@@ -113,7 +116,7 @@ class Newsletter extends DataObject implements CMSPreviewable
                     _t(
                         'Newsletter.FieldRequired',
                         '"{field}" field is required',
-                        array('field' => isset(self::$field_labels[$field])?self::$field_labels[$field]:$field)
+                        array('field' => isset(self::$field_labels[$field]) ? self::$field_labels[$field] : $field)
                     )
                 );
             }
@@ -423,7 +426,7 @@ class Newsletter extends DataObject implements CMSPreviewable
     public function render()
     {
         $origState = Config::inst()->get(SSViewer::class, 'theme_enabled');
-        Config::inst()->update(SSViewer::class, 'theme_enabled', true);
+        Config::modify()->set(SSViewer::class, 'theme_enabled', true);
 
         if (!$templateName = $this->RenderTemplate) {
             $templateName = 'SimpleNewsletterTemplate';
@@ -439,7 +442,7 @@ class Newsletter extends DataObject implements CMSPreviewable
             )->renderWith($templateName)
         );
 
-        Config::inst()->update(SSViewer::class, 'theme_enabled', $origState);
+        Config::modify()->set(SSViewer::class, 'theme_enabled', $origState);
 
         return $data;
     }

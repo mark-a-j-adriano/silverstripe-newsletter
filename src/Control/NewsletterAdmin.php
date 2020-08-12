@@ -83,10 +83,8 @@ class NewsletterAdmin extends ModelAdmin
         if (!$paths) {
             if ($config = SiteConfig::current_site_config()) {
                 $theme = $config->Theme;
-            } elseif (SSViewer::current_custom_theme()) {
-                $theme = SSViewer::current_custom_theme();
-            } elseif (SSViewer::current_theme()) {
-                $theme = SSViewer::current_theme();
+            } elseif ($themes = SSViewer::get_themes()) {
+                $theme = $themes[0];
             } else {
                 $theme = false;
             }

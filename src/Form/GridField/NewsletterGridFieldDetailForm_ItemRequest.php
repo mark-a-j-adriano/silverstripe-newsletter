@@ -12,6 +12,12 @@ use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Newsletter\Model\Recipient;
+use SilverStripe\Control\PjaxResponseNegotiator;
+use SilverStripe\Core\Convert;
+use SilverStripe\Newsletter\Control\Email\NewsletterEmail;
+use SilverStripe\Security\Security;
+use SilverStripe\ORM\ValidationException;
 
 class NewsletterGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemRequest
 {
@@ -79,7 +85,7 @@ class NewsletterGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Item
     public function emailpreview()
     {
         $origState = Config::inst()->get('SSViewer', 'theme_enabled');
-        Config::inst()->update('SSViewer', 'theme_enabled', true);
+        Config::modify()->set('SSViewer', 'theme_enabled', true);
 
         $request = Controller::curr()->getRequest();
         $emailVar = $request->getVar('email');
@@ -89,13 +95,13 @@ class NewsletterGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Item
         if ($request && !empty($emailVar)) {
             $recipient->Email = Convert::raw2js($emailVar);
         } else {
-            $recipient->Email = Member::currentUser()->Email;
+            $recipient->Email = Security::getCurrentUser()->Email;
         }
 
         $newsletter = $this->record;
         $email = NewsletterEmail::create($newsletter, $recipient, true);
         $email->send();
-        Config::inst()->update('SSViewer', 'theme_enabled', $origState);
+        Config::modify()->set('SSViewer', 'theme_enabled', $origState);
 
         return Controller::curr()->redirectBack();
     }
@@ -137,7 +143,7 @@ class NewsletterGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Item
             $newNewsletter->SentDate = null;
 
             //write once without validation
-            Newsletter::set_validation_enabled(false);
+            // Newsletter::set_validation_enabled(false);
 
             // save once to get the new Newsletter created so as to add to mailing list
             $newNewsletter->write($showDebug = false, $forceInsert = true);
@@ -146,7 +152,7 @@ class NewsletterGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Item
             if ($origMailinglists && $origMailinglists->count()) {
                 $newNewsletter->MailingLists()->addMany($origMailinglists);
             }
-            Newsletter::set_validation_enabled(true);
+            // Newsletter::set_validation_enabled(true);
             $newNewsletter->Status = 'Draft';  //custom: changing the status of to indicate we are sending
 
             //add a (1) (2) count to new newsletter names if the subject name already exists elsewhere
@@ -163,7 +169,7 @@ class NewsletterGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Item
 
             $newNewsletter->write();
         } catch (ValidationException $e) {
-            $form->sessionMessage($e->getResult()->message(), 'bad');
+            $form->sessionMessage($e->getResult()->getMessages(), 'bad');
             $responseNegotiator = new PjaxResponseNegotiator(
                 array(
                 'CurrentForm' => function () use (&$form) {
@@ -205,7 +211,7 @@ class NewsletterGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Item
             $this->record->scheduleSend();
             $this->gridField->getList()->add($this->record);
         } catch (ValidationException $e) {
-            $form->sessionMessage($e->getResult()->message(), 'bad');
+            $form->sessionMessage($e->getResult()->getMessages(), 'bad');
             $responseNegotiator = new PjaxResponseNegotiator(
                 array(
                 'CurrentForm' => function () use (&$form) {
@@ -231,7 +237,7 @@ class NewsletterGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Item
 
         if ($new_record) {
             return Controller::curr()->redirect($this->Link());
-        } elseif ($this->gridField->getList()->byId($this->record->ID)) {
+        } elseif ($this->gridField->getList()->find('ID', $this->record->ID)) {
             // Return new view, as we can't do a "virtual redirect" via the CMS Ajax
             // to the same URL (it assumes that its content is already current, and doesn't reload)
             return $this->edit(Controller::curr()->getRequest());

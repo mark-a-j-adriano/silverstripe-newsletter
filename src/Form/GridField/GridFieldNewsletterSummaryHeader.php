@@ -12,10 +12,10 @@ class GridFieldNewsletterSummaryHeader implements GridField_HTMLProvider
         if ($gridField && $gridField->getModelClass() && $gridField->getModelClass() == SendRecipientQueue::class) {
             $list = $gridField->getList();
 
-            $scheduled = $list->filter(array('Status'=>'Scheduled'))->count();
-            $progress = $list->filter(array('Status'=>'InProgress'))->count();
-            $sent = $list->filter(array('Status'=>'Sent'))->count();
-            $failed = $list->filter(array('Status'=>array('Failed', 'Bounced', 'BlackListed')))->count();
+            $scheduled = $list->find('Status', 'Scheduled')->count();
+            $progress = $list->find('Status', 'InProgress')->count();
+            $sent = $list->find('Status', 'Sent')->count();
+            $failed = $list->find('Status', array('Failed', 'Bounced', 'BlackListed'))->count();
 
             $statuses = array();
             if ($scheduled) {

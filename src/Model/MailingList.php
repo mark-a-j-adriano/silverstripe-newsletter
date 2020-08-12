@@ -20,6 +20,8 @@ use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Newsletter\Form\GridField\NewsletterGridFieldConfig;
+use SilverStripe\ORM\UnsavedRelationList;
+use SilverStripe\ORM\ArrayList;
 
 class MailingList extends DataObject
 {

@@ -21,11 +21,13 @@ class NewsletterGridFieldConfig extends GridFieldConfig_RecordEditor
             )
         );
 
-        $this->getComponentByType(GridFieldDataColumns::class)
-            ->setFieldCasting(
-                array(
-                "Content" => "HTMLText->LimitSentences",
-                )
-            );
+        $dataColumns = $this->getComponentByType(GridFieldDataColumns::class);
+
+        /** @var GridFieldDataColumns $dataColumns */
+        $dataColumns->setFieldCasting(
+            array(
+            "Content" => "HTMLText->LimitSentences",
+            )
+        );
     }
 }

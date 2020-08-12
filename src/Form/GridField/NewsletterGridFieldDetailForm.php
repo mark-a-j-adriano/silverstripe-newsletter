@@ -4,6 +4,7 @@ namespace SilverStripe\Newsletter\Form\GridField;
 
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Newsletter\Form\GridField\NewsletterGridFieldDetailForm_ItemRequest;
 
 class NewsletterGridFieldDetailForm extends GridFieldDetailForm
 {

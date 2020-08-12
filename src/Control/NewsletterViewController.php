@@ -6,6 +6,7 @@ use SilverStripe\Control\Cookie;
 use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Newsletter\Model\Newsletter;
 use SilverStripe\Newsletter\Model\Recipient;
+use SilverStripe\Newsletter\Control\Email\NewsletterEmail;
 
 class NewsletterViewController extends ContentController
 {
@@ -18,7 +19,7 @@ class NewsletterViewController extends ContentController
             return $this->httpError(404);
         }
 
-        $newsletterEmail = newsletterEmail::create($newsletter, $recipient);
+        $newsletterEmail = NewsletterEmail::create($newsletter, $recipient);
 
         return $newsletterEmail->render();
     }

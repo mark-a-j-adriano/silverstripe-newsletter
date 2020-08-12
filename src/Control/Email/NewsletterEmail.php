@@ -11,6 +11,8 @@ use SilverStripe\View\SSViewer_FromString;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Newsletter\Model\NewsletterTrackedLink;
 use SilverStripe\Newsletter\Control\UnsubscribeController;
+use SilverStripe\Newsletter\Model\Newsletter;
+use SilverStripe\Newsletter\Model\Mailinglists;
 
 /**
  *
@@ -19,7 +21,7 @@ use SilverStripe\Newsletter\Control\UnsubscribeController;
 class NewsletterEmail extends Email
 {
     /**
-     * @var array
+     * @var MailingList
      */
     protected $mailinglists;
 
@@ -97,7 +99,7 @@ class NewsletterEmail extends Email
     public function send()
     {
         $this->extend('onBeforeSend');
-
+        $id = (int) $this->newsletter->ID;
         return parent::send($id);
     }
 

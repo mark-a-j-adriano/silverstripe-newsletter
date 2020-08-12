@@ -4,6 +4,7 @@ namespace SilverStripe\Newsletter\Model;
 
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Newsletter\Control\Email\NewsletterEmail;
+use PhpOffice\PhpSpreadsheet\Calculation\Exception;
 
 class SendRecipientQueue extends DataObject
 {

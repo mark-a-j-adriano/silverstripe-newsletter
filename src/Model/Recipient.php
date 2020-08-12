@@ -80,7 +80,7 @@ class Recipient extends DataObject
         $result = parent::validate();
 
         if (empty($this->Email)) {
-            $result->error(
+            $result->addError(
                 _t(
                     'Newsletter.FieldRequired',
                     '"{field}" field is required',
@@ -90,7 +90,7 @@ class Recipient extends DataObject
         }
 
         if (!Email::is_valid_address($this->Email)) {
-            $result->error(
+            $result->addError(
                 _t(
                     'Newsletter.InvalidEmailAddress',
                     '"{field}" field is invalid',
